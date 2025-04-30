@@ -13,7 +13,7 @@ export class UpdateUserUseCase {
                 await postgresGetUserByEmailRepository.execute(
                     updateUserParams.email,
                 )
-            if (userAlreadyExists) {
+            if (userAlreadyExists && userAlreadyExists.id !== userId) {
                 throw new EmailAlreadyInUseError(updateUserParams.email)
             }
         }
@@ -24,8 +24,10 @@ export class UpdateUserUseCase {
 
         // se a senha for atualizada, criptografá-la
         if (updateUserParams.password) {
-            const hashedPassword = bycrypt.hash(updateUserParams.password, 10)
-
+            const hashedPassword = await bycrypt.hash(
+                updateUserParams.password,
+                10,
+            )
             user.password = hashedPassword
         }
 
