@@ -3,9 +3,9 @@ import {
     badRequest,
     checkIfUUIDIsValid,
     invalidIdResponse,
-    created,
-} from '../helpers'
-import { UserNotFoundError } from '../../errors/user'
+    create,
+} from '../helpers/index.js'
+import { UserNotFoundError } from '../../errors/user.js'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -65,7 +65,7 @@ export class CreateTransactionController {
             const createdTransaction =
                 await this.createTransactionUseCase.execute(transation)
 
-            return created(createdTransaction)
+            return create(createdTransaction)
         } catch (error) {
             console.log(error)
             if (error instanceof UserNotFoundError) {
