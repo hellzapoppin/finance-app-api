@@ -1,4 +1,4 @@
-import { UserNotFoundError } from '../../errors/user'
+import { UserNotFoundError } from '../../errors/user.js'
 import {
     checkIfUUIDIsValid,
     invalidIdResponse,
@@ -16,7 +16,7 @@ export class GetTransactionsByUserIdController {
         try {
             const userId = httpRequest.query.user_id
 
-            if (userId) {
+            if (!userId) {
                 return requiredFieldsIsMissingResponse('user_id')
             }
 
@@ -27,7 +27,9 @@ export class GetTransactionsByUserIdController {
             }
 
             const transactions =
-                await this.getTransactionsByUserIdUseCase.execute({ userId })
+                await this.getTransactionsByUserIdUseCase.execute({
+                    user_id: userId,
+                })
 
             return ok(transactions)
         } catch (error) {
