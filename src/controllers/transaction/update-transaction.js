@@ -30,7 +30,9 @@ export class UpdateTransactionController {
                 })
             }
 
-            const idIsValid = checkIfUUIDIsValid(params.transactionId)
+            const idIsValid = checkIfUUIDIsValid(
+                httpRequest.params.transactionId,
+            )
 
             if (!idIsValid) {
                 return invalidIdResponse()
@@ -53,7 +55,7 @@ export class UpdateTransactionController {
             }
 
             const transction = await this.updateTransactionUseCase.execute(
-                httpRequest.params.id,
+                httpRequest.params.transactionId,
                 params,
             )
 
