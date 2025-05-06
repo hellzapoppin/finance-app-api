@@ -12,7 +12,9 @@ export class GetUserBalanceUseCase {
             throw new UserNotFoundError(params.userId)
         }
 
-        const balance = await this.getUserBalanceRepository(params.userId)
+        const balance = await this.getUserBalanceRepository.execute(
+            params.userId,
+        )
 
         return balance
     }
