@@ -1,9 +1,9 @@
 import {
     GetUserByIdController,
-    CreateTransactionController,
     UpdateUserController,
     DeleteUserController,
     GetUserBalanceController,
+    CreateUserController,
 } from '../../controllers/index.js'
 import {
     PostgresGetUserByIdRepository,
@@ -40,7 +40,7 @@ export const makeCreateUserController = () => {
         createUserRepository,
     )
 
-    const createTransactionController = new CreateTransactionController(
+    const createTransactionController = new CreateUserController(
         createUserUseCase,
     )
 
