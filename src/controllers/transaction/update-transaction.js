@@ -1,11 +1,9 @@
+import { ZodError } from 'zod'
+import { updateTransactionSchema } from '../../schemas/transactions.js'
 import {
     badRequest,
-    checkIfAmountIsValid,
-    checkIfTypeIsValid,
     checkIfUUIDIsValid,
-    invalidAmountResponse,
     invalidIdResponse,
-    invalidTypeResponse,
     ok,
     serverError,
 } from '../helpers/index.js'
@@ -18,41 +16,13 @@ export class UpdateTransactionController {
         try {
             const params = httpRequest.body
 
-            const allowedFields = ['name', 'date', 'amount', 'type']
-
-            const someFieldsIsNotAllowed = Object.keys(params).some(
-                (field) => !allowedFields.includes(field),
-            )
-
-            if (someFieldsIsNotAllowed) {
-                return badRequest({
-                    message: 'Some provided fields are not allowed',
-                })
-            }
-
-            const idIsValid = checkIfUUIDIsValid(
-                httpRequest.params.transactionId,
-            )
+            const idIsValid = checkIfUUIDIsValid(params.transactionId)
 
             if (!idIsValid) {
                 return invalidIdResponse()
             }
 
-            if (params.amount) {
-                const amountIsValid = checkIfAmountIsValid(params.amount)
-
-                if (!amountIsValid) {
-                    return invalidAmountResponse()
-                }
-            }
-
-            if (params.type) {
-                const typeIsValid = checkIfTypeIsValid(params.type)
-
-                if (!typeIsValid) {
-                    return invalidTypeResponse()
-                }
-            }
+            await updateTransactionSchema.parseAsync(params)
 
             const transction = await this.updateTransactionUseCase.execute(
                 httpRequest.params.transactionId,
@@ -62,6 +32,9 @@ export class UpdateTransactionController {
             return ok(transction)
         } catch (error) {
             console.log(error)
+            if (error instanceof ZodError) {
+                return badRequest({ message: error.errors[0].message })
+            }
             return serverError()
         }
     }
