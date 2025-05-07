@@ -1,26 +1,34 @@
-import { PostgresHelper } from '../../../db/postgres/helpers.js'
+import { prisma } from '../../../../prisma/prisma.js'
+// criando inserção no banco sem o ORM Prisma
+// import { PostgresHelper } from '../../../db/postgres/helpers.js'
 
 export class PostgresUpdateUserRepository {
     async execute(userId, updateUserParams) {
-        const updateFields = []
-        const updateValues = []
-
-        Object.keys(updateUserParams).forEach((key) => {
-            updateFields.push(`${key} = $${updateFields.length + 1}`)
-            updateValues.push(updateUserParams[key])
+        return await prisma.user.update({
+            where: { id: userId },
+            data: updateUserParams,
         })
 
-        updateValues.push(userId)
+        // criando inserção no banco sem o ORM Prisma
+        // const updateFields = []
+        // const updateValues = []
 
-        const updateQuery = `
-            UPDATE users
-            SET ${updateFields.join(', ')}
-            WHERE id = $${updateValues.length}
-            RETURNING *;
-        `
+        // Object.keys(updateUserParams).forEach((key) => {
+        //     updateFields.push(`${key} = $${updateFields.length + 1}`)
+        //     updateValues.push(updateUserParams[key])
+        // })
 
-        const updateUser = await PostgresHelper.query(updateQuery, updateValues)
+        // updateValues.push(userId)
 
-        return updateUser[0]
+        // const updateQuery = `
+        //     UPDATE users
+        //     SET ${updateFields.join(', ')}
+        //     WHERE id = $${updateValues.length}
+        //     RETURNING *;
+        // `
+
+        // const updateUser = await PostgresHelper.query(updateQuery, updateValues)
+
+        // return updateUser[0]
     }
 }
