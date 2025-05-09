@@ -1,4 +1,4 @@
-import { badRequest, create } from '../helpers/index.js'
+import { badRequest, create, serverError } from '../helpers/index.js'
 import { UserNotFoundError } from '../../errors/user.js'
 import { createTransactionSchema } from '../../schemas/transactions.js'
 import { ZodError } from 'zod'
@@ -25,6 +25,7 @@ export class CreateTransactionController {
             if (error instanceof UserNotFoundError) {
                 return badRequest({ message: error.message })
             }
+            return serverError()
         }
     }
 }
