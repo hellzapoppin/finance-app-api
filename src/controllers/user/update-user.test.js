@@ -54,4 +54,18 @@ describe('Update User Controller', () => {
 
         expect(result.statusCode).toBe(400)
     })
+
+    it('should return 400 if an invalid pssword is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            params: httpRequest.params,
+            body: {
+                ...httpRequest.body,
+                password: faker.internet.password({ length: 3 }),
+            },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
 })
