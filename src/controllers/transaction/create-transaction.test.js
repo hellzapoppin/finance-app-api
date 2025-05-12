@@ -23,7 +23,7 @@ describe('Create Transaction Controller', () => {
             type: faker.helpers.arrayElement([
                 'EARNING',
                 'EXPENSE',
-                'INVESTMENTS',
+                'INVESTMENT',
             ]),
             amount: Number(faker.finance.amount()),
         },

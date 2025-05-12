@@ -15,7 +15,7 @@ describe('Get Transactions By User Id Controller', () => {
                     type: faker.helpers.arrayElement([
                         'EARNING',
                         'EXPENSE',
-                        'INVESTMENTS',
+                        'INVESTMENT',
                     ]),
                 },
             ]

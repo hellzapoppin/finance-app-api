@@ -13,7 +13,7 @@ describe('Update Transaction Controller', () => {
                 type: faker.helpers.arrayElement([
                     'EARNING',
                     'EXPENSE',
-                    'INVESTMENTS',
+                    'INVESTMENT',
                 ]),
             }
         }
@@ -37,7 +37,7 @@ describe('Update Transaction Controller', () => {
             type: faker.helpers.arrayElement([
                 'EARNING',
                 'EXPENSE',
-                'INVESTMENTS',
+                'INVESTMENT',
             ]),
         },
     }
