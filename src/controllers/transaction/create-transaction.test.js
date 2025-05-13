@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { CreateTransactionController } from './create-transaction.js'
+import { UserNotFoundError } from '../../errors/user.js'
 
 describe('Create Transaction Controller', () => {
     class CreateTransactionUseCaseStub {
@@ -143,5 +144,16 @@ describe('Create Transaction Controller', () => {
         await sut.execute(httpRequest)
 
         expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
+    })
+
+    it('should return 404 if CreateTransactionUseCase throws UserNotFoundError', async () => {
+        const { sut, createTransactionUseCase } = makeSut()
+        jest.spyOn(createTransactionUseCase, 'execute').mockRejectedValueOnce(
+            new UserNotFoundError(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(404)
     })
 })
