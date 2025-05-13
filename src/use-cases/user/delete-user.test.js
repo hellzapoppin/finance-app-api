@@ -9,6 +9,8 @@ describe('Delete User Use Case', () => {
         password: faker.internet.password(),
     }
 
+    const userId = faker.string.uuid()
+
     class DeleteUserRepositoryStub {
         async execute(userId) {
             return { ...user, id: userId }
@@ -24,10 +26,18 @@ describe('Delete User Use Case', () => {
 
     it('should successfully delete an user', async () => {
         const { sut } = makeSut()
-        const userId = faker.string.uuid()
 
         const deletedUser = await sut.execute(userId)
 
         expect(deletedUser).toEqual({ ...user, id: userId })
+    })
+
+    it('should call DeleteUserUseCase with correct params', async () => {
+        const { sut, deleteUserRepository } = makeSut()
+        const executeSpy = jest.spyOn(deleteUserRepository, 'execute')
+
+        await sut.execute(userId)
+
+        expect(executeSpy).toHaveBeenCalledWith(userId)
     })
 })
