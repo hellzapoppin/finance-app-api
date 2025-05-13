@@ -1,5 +1,6 @@
 import { faker } from '@faker-js/faker'
 import { CreateUserUseCase } from './create-user'
+import { EmailAlreadyInUseError } from '../../errors/user'
 
 describe('Create User Use Case', () => {
     class GetUserByEmailRepositoryStub {
@@ -26,36 +27,51 @@ describe('Create User Use Case', () => {
         }
     }
 
+    const user = {
+        fist_name: faker.person.firstName(),
+        last_name: faker.person.lastName(),
+        email: faker.internet.email(),
+        password: faker.internet.password({ length: 7 }),
+    }
+
     const makeSut = () => {
-        const getUserByEmailRepositoryStub = new GetUserByEmailRepositoryStub()
-        const createUserRepositoryStub = new CreateUserRepositoryStub()
-        const passwordHasherAdapterStub = new PasswordHasherAdapterStub()
-        const idGeneratorAdapterStub = new IdGeneratorAdapterStub()
+        const getUserByEmailRepository = new GetUserByEmailRepositoryStub()
+        const createUserRepository = new CreateUserRepositoryStub()
+        const passwordHasherAdapter = new PasswordHasherAdapterStub()
+        const idGeneratorAdapter = new IdGeneratorAdapterStub()
         const sut = new CreateUserUseCase(
-            getUserByEmailRepositoryStub,
-            createUserRepositoryStub,
-            passwordHasherAdapterStub,
-            idGeneratorAdapterStub,
+            getUserByEmailRepository,
+            createUserRepository,
+            passwordHasherAdapter,
+            idGeneratorAdapter,
         )
 
         return {
             sut,
-            getUserByEmailRepositoryStub,
-            createUserRepositoryStub,
-            passwordHasherAdapterStub,
-            idGeneratorAdapterStub,
+            getUserByEmailRepository,
+            createUserRepository,
+            passwordHasherAdapter,
+            idGeneratorAdapter,
         }
     }
     it('should successfully create a user', async () => {
         const { sut } = makeSut()
 
-        const createdUser = await sut.execute({
-            fist_name: faker.person.firstName(),
-            last_name: faker.person.lastName(),
-            email: faker.internet.email(),
-            password: faker.internet.password({ length: 7 }),
-        })
+        const createdUser = await sut.execute(user)
 
         expect(createdUser).toBeTruthy()
+    })
+
+    it('should throw an EmailAlreadyInUseError if GetUserByEmailRepository returns an user', async () => {
+        const { sut, getUserByEmailRepository } = makeSut()
+        jest.spyOn(getUserByEmailRepository, 'execute').mockReturnValueOnce(
+            user,
+        )
+
+        const promise = sut.execute(user)
+
+        await expect(promise).rejects.toThrow(
+            new EmailAlreadyInUseError(user.email),
+        )
     })
 })
