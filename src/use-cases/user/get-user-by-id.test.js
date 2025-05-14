@@ -40,4 +40,15 @@ describe('Get User By Id', () => {
 
         expect(executeSpy).toHaveBeenCalledWith(userId)
     })
+
+    it('should throws if GetUserByIdRepository throws', () => {
+        const { sut, getUserByIdRepository } = makeSut()
+        jest.spyOn(getUserByIdRepository, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const promise = sut.execute(userId)
+
+        expect(promise).rejects.toThrow()
+    })
 })
