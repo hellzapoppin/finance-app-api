@@ -4,7 +4,7 @@ import { CreateTransactionUseCase } from './create-transaction'
 describe('Create Transaction Use Case', () => {
     const userId = faker.string.uuid()
 
-    const CreateTransactionParams = {
+    const createTransactionParams = {
         user_id: userId,
         name: faker.book.title(),
         date: faker.date.anytime().toISOString(),
@@ -57,11 +57,20 @@ describe('Create Transaction Use Case', () => {
     it('should create a transaction successfully', async () => {
         const { sut } = makeSut()
 
-        const result = await sut.execute(CreateTransactionParams)
+        const result = await sut.execute(createTransactionParams)
 
         expect(result).toEqual({
-            ...CreateTransactionParams,
+            ...createTransactionParams,
             id: 'generated_id',
         })
+    })
+
+    it('should call GetUserByIdRepository with correct params', async () => {
+        const { sut, getUserByIdRepository } = makeSut()
+        const executeSpy = jest.spyOn(getUserByIdRepository, 'execute')
+
+        await sut.execute(createTransactionParams)
+
+        expect(executeSpy).toHaveBeenCalledWith(createTransactionParams.user_id)
     })
 })
