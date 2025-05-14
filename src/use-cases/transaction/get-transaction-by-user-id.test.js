@@ -75,7 +75,7 @@ describe('Get Transaction By User Id', () => {
         expect(executeSpy).toHaveBeenLastCalledWith(userId)
     })
 
-    it('should call GetTransactionsByUserIdReository with correct params', async () => {
+    it('should call GetTransactionsByUserIdRepository with correct params', async () => {
         const { sut, getTransactionsByUserIdRepository } = makeSut()
         const executeSpy = jest.spyOn(
             getTransactionsByUserIdRepository,
@@ -85,5 +85,16 @@ describe('Get Transaction By User Id', () => {
         await sut.execute(userId)
 
         expect(executeSpy).toHaveBeenLastCalledWith(userId)
+    })
+
+    it('should throws if GetUserByIdRepository throws', async () => {
+        const { sut, getUserByIdRepository } = makeSut()
+        jest.spyOn(getUserByIdRepository, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const promise = sut.execute(userId)
+
+        expect(promise).rejects.toThrow()
     })
 })
