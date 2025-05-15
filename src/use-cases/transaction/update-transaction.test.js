@@ -2,6 +2,8 @@ import { faker } from '@faker-js/faker'
 import { UpdateTransactionUseCase } from './update-transaction'
 
 describe('Update Transaction Use Case', () => {
+    const updateTransactionParams = { name: faker.book.title() }
+
     const transaction = {
         id: faker.string.uuid(),
         use_id: faker.string.uuid(),
@@ -31,7 +33,7 @@ describe('Update Transaction Use Case', () => {
 
     it('should update a transaction successfully', async () => {
         const { sut } = makeSut()
-        const updateTransactionParams = { name: faker.book.title() }
+
         const result = await sut.execute(
             transaction.id,
             updateTransactionParams,
@@ -42,5 +44,17 @@ describe('Update Transaction Use Case', () => {
             ...updateTransactionParams,
             id: transaction.id,
         })
+    })
+
+    it('should call UpdateTransactionRepository with correct params', async () => {
+        const { sut, updateTransactionRepository } = makeSut()
+        const executeSpy = jest.spyOn(updateTransactionRepository, 'execute')
+
+        await sut.execute(transaction.id, updateTransactionParams)
+
+        expect(executeSpy).toHaveBeenCalledWith(
+            transaction.id,
+            updateTransactionParams,
+        )
     })
 })
