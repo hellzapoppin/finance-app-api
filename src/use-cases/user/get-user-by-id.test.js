@@ -1,17 +1,9 @@
-const { faker } = require('@faker-js/faker')
+import { faker } from '@faker-js/faker'
 import { GetUserByIdUseCase } from './get-user-by-id.js'
+import { user } from '../../tests/index.js'
 
 describe('Get User By Id', () => {
     const userId = faker.string.uuid()
-
-    const user = {
-        id: userId,
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password(),
-    }
-
     class GetUserByIdRepositoryStub {
         async execute() {
             return user
