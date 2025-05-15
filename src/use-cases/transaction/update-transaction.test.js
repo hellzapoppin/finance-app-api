@@ -57,4 +57,16 @@ describe('Update Transaction Use Case', () => {
             updateTransactionParams,
         )
     })
+
+    it('should call UpdateTransactionRepository with correct params', async () => {
+        const { sut, updateTransactionRepository } = makeSut()
+        jest.spyOn(
+            updateTransactionRepository,
+            'execute',
+        ).mockRejectedValueOnce(new Error())
+
+        const promise = sut.execute(transaction.id, updateTransactionParams)
+
+        expect(promise).rejects.toThrow()
+    })
 })
