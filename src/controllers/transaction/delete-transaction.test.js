@@ -1,10 +1,11 @@
 import { faker } from '@faker-js/faker'
 import { DeleteTransactionController } from './delete-transaction.js'
+import { transaction } from '../../tests/index.js'
 
 describe('Delete Transaction Controller', () => {
     class DeleteTransactionUseCaseStub {
-        async execute(transactionId) {
-            return transactionId
+        async execute() {
+            return transaction
         }
     }
 
