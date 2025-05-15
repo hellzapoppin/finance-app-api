@@ -1,16 +1,11 @@
-import { faker } from '@faker-js/faker'
 import { CreateTransactionUseCase } from './create-transaction'
 import { UserNotFoundError } from '../../errors/user'
+import { transaction, user } from '../../tests/index.js'
 
 describe('Create Transaction Use Case', () => {
-    const userId = faker.string.uuid()
-
     const createTransactionParams = {
-        user_id: userId,
-        name: faker.book.title(),
-        date: faker.date.anytime().toISOString(),
-        amount: Number(faker.finance.amount()),
-        type: faker.helpers.arrayElements(['EARNING', 'EXPENSE', 'INVESTMENT']),
+        ...transaction,
+        id: undefined,
     }
 
     class CreateTransactionRepositoryStub {
@@ -21,11 +16,8 @@ describe('Create Transaction Use Case', () => {
     class GetUserByIdRepositoryStub {
         async execute(userId) {
             return {
+                ...user,
                 id: userId,
-                fist_name: faker.person.firstName(),
-                last_name: faker.person.lastName(),
-                email: faker.internet.email(),
-                password: faker.internet.password({ length: 7 }),
             }
         }
     }
@@ -61,8 +53,8 @@ describe('Create Transaction Use Case', () => {
         const result = await sut.execute(createTransactionParams)
 
         expect(result).toEqual({
-            ...createTransactionParams,
             id: 'generated_id',
+            ...createTransactionParams,
         })
     })
 
@@ -92,8 +84,8 @@ describe('Create Transaction Use Case', () => {
         await sut.execute(createTransactionParams)
 
         expect(executeSpy).toHaveBeenCalledWith({
-            ...createTransactionParams,
             id: 'generated_id',
+            ...createTransactionParams,
         })
     })
 
@@ -103,7 +95,9 @@ describe('Create Transaction Use Case', () => {
 
         const promise = sut.execute(createTransactionParams)
 
-        await expect(promise).rejects.toThrow(new UserNotFoundError(userId))
+        await expect(promise).rejects.toThrow(
+            new UserNotFoundError(createTransactionParams.user_id),
+        )
     })
 
     it('should throw if GetUserByIdRepository throws', async () => {
