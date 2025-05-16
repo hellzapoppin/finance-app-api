@@ -1,8 +1,11 @@
 import { CreateUserUseCase } from './create-user'
 import { EmailAlreadyInUseError } from '../../errors/user'
-import { user } from '../../tests/index.js'
+import { user as fixtureUser } from '../../tests/index.js'
 
 describe('Create User Use Case', () => {
+    // eslint-disable-next-line no-unused-vars
+    const { id, ...user } = fixtureUser
+
     class GetUserByEmailRepositoryStub {
         async execute() {
             return null
@@ -10,7 +13,7 @@ describe('Create User Use Case', () => {
     }
 
     class CreateUserRepositoryStub {
-        async execute(user) {
+        async execute() {
             return user
         }
     }

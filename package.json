@@ -5,10 +5,10 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "jest",
-        "test:watch": "jest --watch --passWithNoTests",
-        "test:coverage": "jest --passWithNoTests --silent --coverage",
-        "postinstall": "npm husky install && npx prisma generate",
+        "test": "dotenv -e .env.test -- jest -passWithNoTests --silent",
+        "test:watch": "npm run test -- --watch",
+        "test:coverage": "npm run test -- --coverage",
+        "postinstall": "husky install && prisma generate",
         "migrations": "node src/db/postgres/migrations/exec.js",
         "start:dev": "node --watch index.js"
     },
@@ -35,6 +35,7 @@
         "@prisma/client": "^6.7.0",
         "bcrypt": "^5.1.1",
         "dotenv": "^16.5.0",
+        "dotenv-cli": "^8.0.0",
         "express": "^5.1.0",
         "pg": "^8.15.6",
         "uuid": "^11.1.0",
