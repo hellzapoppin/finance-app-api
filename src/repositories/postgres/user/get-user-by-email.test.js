@@ -20,4 +20,15 @@ describe('Get User By Email', () => {
 
         expect(prismaSpy).toHaveBeenCalledWith({ where: { email: user.email } })
     })
+
+    it('should throw if Prisma throws', async () => {
+        const sut = new PostgresGetUserByEmailRepository()
+        jest.spyOn(prisma.transaction, 'findUnique').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const promise = sut.execute(user.email)
+
+        expect(promise).rejects.toThrow()
+    })
 })
