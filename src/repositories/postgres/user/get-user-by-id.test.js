@@ -21,4 +21,15 @@ describe('Get User By Id', () => {
 
         expect(prismaSpy).toHaveBeenCalledWith({ where: { id: user.id } })
     })
+
+    it('should throw if Prisma throws', async () => {
+        const sut = new PostgresGetUserByIdRepository()
+        jest.spyOn(prisma.transaction, 'findUnique').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const promise = sut.execute(user.id)
+
+        expect(promise).rejects.toThrow()
+    })
 })
