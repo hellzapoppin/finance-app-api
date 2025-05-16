@@ -1,0 +1,15 @@
+import { PostgresGetUserByIdRepository } from './get-user-by-id'
+import { user } from './../../../tests/index.js'
+import { prisma } from '../../../../prisma/prisma'
+
+describe('Get User By Id', () => {
+    it('should get user by ID on DB', async () => {
+        const createdUser = await prisma.user.create({ data: user })
+
+        const sut = new PostgresGetUserByIdRepository()
+
+        const result = await sut.execute(createdUser.id)
+
+        expect(result).toStrictEqual(user)
+    })
+})
