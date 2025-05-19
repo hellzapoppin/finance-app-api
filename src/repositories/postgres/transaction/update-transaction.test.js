@@ -6,23 +6,23 @@ import { TransactionType } from '@prisma/client'
 import dayjs from 'dayjs'
 
 describe('Postgres Update Transaction Repository', () => {
+    const updateTransactionParams = {
+        user_id: user.id,
+        name: faker.book.title(),
+        date: faker.date.anytime().toISOString(),
+        amount: Number(faker.finance.amount()),
+        type: faker.helpers.arrayElement([
+            TransactionType.EARNING,
+            TransactionType.EXPENSE,
+            TransactionType.INVESTMENT,
+        ]),
+    }
     it('should update a transacion on DB successfully', async () => {
         await prisma.user.create({ data: user })
         await prisma.transaction.create({
             data: { ...transaction, user_id: user.id },
         })
         const sut = new PostgresUpdateTransactionRepository()
-        const updateTransactionParams = {
-            user_id: user.id,
-            name: faker.book.title(),
-            date: faker.date.anytime().toISOString(),
-            amount: Number(faker.finance.amount()),
-            type: faker.helpers.arrayElement([
-                TransactionType.EARNING,
-                TransactionType.EXPENSE,
-                TransactionType.INVESTMENT,
-            ]),
-        }
 
         const result = await sut.execute(
             transaction.id,
@@ -45,5 +45,21 @@ describe('Postgres Update Transaction Repository', () => {
         expect(dayjs(result.date).year()).toBe(
             dayjs(updateTransactionParams.date).year(),
         )
+    })
+
+    it('should call Prisma with correct params', async () => {
+        await prisma.user.create({ data: user })
+        await prisma.transaction.create({
+            data: { ...transaction, user_id: user.id },
+        })
+        const sut = new PostgresUpdateTransactionRepository()
+        const prismaSpy = jest.spyOn(prisma.transaction, 'update')
+
+        await sut.execute(transaction.id, { ...transaction, user_id: user.id })
+
+        expect(prismaSpy).toHaveBeenCalledWith({
+            where: { id: transaction.id },
+            data: { ...transaction, user_id: user.id },
+        })
     })
 })
