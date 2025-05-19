@@ -7,6 +7,7 @@ import {
     checkIfUUIDIsValid,
     invalidIdResponse,
 } from '../helpers/validations.js'
+import { TransactionNotFoundError } from '../../errors/transaction.js'
 
 export class DeleteTransactionController {
     constructor(deleteTransactionUseCase) {
@@ -30,6 +31,9 @@ export class DeleteTransactionController {
             return ok(deletedTransaction)
         } catch (error) {
             console.log(error)
+            if (error instanceof TransactionNotFoundError) {
+                return transactionNotFoundResponse()
+            }
             return serverError()
         }
     }
