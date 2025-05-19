@@ -1,4 +1,5 @@
 import { faker } from '@faker-js/faker'
+import { TransactionType } from '@prisma/client'
 
 export const transaction = {
     id: faker.string.uuid(),
@@ -6,5 +7,9 @@ export const transaction = {
     name: faker.book.title(),
     date: faker.date.anytime().toISOString(),
     amount: Number(faker.finance.amount()),
-    type: faker.helpers.arrayElements(['EARNING', 'EXPENSE', 'INVESTMENT']),
+    type: faker.helpers.arrayElement([
+        TransactionType.EARNING,
+        TransactionType.EXPENSE,
+        TransactionType.INVESTMENT,
+    ]),
 }
