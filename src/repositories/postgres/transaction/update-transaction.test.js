@@ -7,7 +7,6 @@ import dayjs from 'dayjs'
 
 describe('Postgres Update Transaction Repository', () => {
     const updateTransactionParams = {
-        user_id: user.id,
         name: faker.book.title(),
         date: faker.date.anytime().toISOString(),
         amount: Number(faker.finance.amount()),
