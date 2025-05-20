@@ -1,9 +1,11 @@
 import {
     CreateTransactionController,
+    DeleteTransactionController,
     UpdateTransactionController,
 } from '../../controllers'
 import {
     makeCreateTransactionController,
+    makeDeleteTransactionController,
     makeUpdateTransactionController,
 } from './transaction'
 
@@ -17,6 +19,12 @@ describe('Transaction Controller Factories', () => {
     it('should return a valid UpdateTrasactionController instance', () => {
         expect(makeUpdateTransactionController()).toBeInstanceOf(
             UpdateTransactionController,
+        )
+    })
+
+    it('should return a valid DeleteTrasactionController instance', () => {
+        expect(makeDeleteTransactionController()).toBeInstanceOf(
+            DeleteTransactionController,
         )
     })
 })
