@@ -1,7 +1,7 @@
 // criando inserção no banco sem o ORM Prisma
 // import { PostgresHelper } from '../../../db/postgres/helpers.js'
 
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library'
+import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library.js'
 import { prisma } from '../../../../prisma/prisma.js'
 import { TransactionNotFoundError } from '../../../errors/transaction.js'
 
