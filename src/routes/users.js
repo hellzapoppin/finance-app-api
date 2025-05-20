@@ -1,4 +1,4 @@
-import { Route } from 'express'
+import { Router } from 'express'
 
 import {
     makeCreateUserController,
@@ -8,7 +8,7 @@ import {
     makeUpdateUserController,
 } from '../factories/controllers/users.js'
 
-export const usersRouter = Route()
+export const usersRouter = Router()
 
 usersRouter.get('/:userId', async (request, response) => {
     const getUserByIdController = makeGetUserByIdController()
