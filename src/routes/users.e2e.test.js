@@ -130,4 +130,19 @@ describe('User Routes E2E Tests', () => {
 
         expect(response.status).toBe(404)
     })
+
+    it('PATCH /api/users/:userId should return 404 when user is not found', async () => {
+        const updateUserParams = {
+            first_name: faker.person.firstName(),
+            last_name: faker.person.firstName(),
+            email: faker.internet.email(),
+            password: faker.internet.password(),
+        }
+
+        const response = await request(app)
+            .patch(`/api/users/${faker.string.uuid()}`)
+            .send(updateUserParams)
+
+        expect(response.status).toBe(404)
+    })
 })
