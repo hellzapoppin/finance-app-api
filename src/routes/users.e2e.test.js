@@ -2,6 +2,7 @@ import request from 'supertest'
 import { app } from '../app.js'
 import { user } from '../tests/index.js'
 import { faker } from '@faker-js/faker'
+import { TransactionType } from '@prisma/client'
 
 describe('User Routes E2E Tests', () => {
     it('POST /api/users should return 201 when user is created', async () => {
@@ -69,5 +70,48 @@ describe('User Routes E2E Tests', () => {
 
         expect(response.status).toBe(200)
         expect(response.body).toEqual(createdUser)
+    })
+
+    it('GET /api/users/:userId/balance should return 200 when gets user balance', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        await request(app).post('/api/transactions').send({
+            name: faker.book.title(),
+            user_id: createdUser.id,
+            date: faker.date.anytime(),
+            amount: 10000,
+            type: TransactionType.EARNING,
+        })
+        await request(app).post('/api/transactions').send({
+            name: faker.book.title(),
+            user_id: createdUser.id,
+            date: faker.date.anytime(),
+            amount: 2000,
+            type: TransactionType.EXPENSE,
+        })
+        await request(app).post('/api/transactions').send({
+            name: faker.book.title(),
+            user_id: createdUser.id,
+            date: faker.date.anytime(),
+            amount: 2000,
+            type: TransactionType.INVESTMENT,
+        })
+
+        const response = await request(app).get(
+            `/api/users/${createdUser.id}/balance`,
+        )
+
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual({
+            earnings: '10000',
+            expenses: '2000',
+            investments: '2000',
+            balance: '6000',
+        })
     })
 })
