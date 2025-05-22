@@ -30,13 +30,7 @@
                     "400": {
                         "description": "Invalid parameters",
                         "schema": {
-                            "type": "object",
-                            "properties": {
-                                "message": {
-                                    "type": "string",
-                                    "example": "Invalid params"
-                                }
-                            }
+                            "$ref": "#definitions/InvalidParamResponse"
                         }
                     },
                     "500": {
@@ -99,6 +93,51 @@
                         "description": "user deleted successfully",
                         "schema": {
                             "$ref": "#/definitions/User"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            },
+            "patch": {
+                "sumamry": "Update user by ID",
+                "tags": ["User"],
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "userId",
+                        "required": true,
+                        "type": "string",
+                        "description": "ID of the user to update"
+                    },
+                    {
+                        "name": "body",
+                        "required": true,
+                        "in": "body",
+                        "schema": { "$ref": "#/definitions/CreateUserParams" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "user updated successfully",
+                        "schema": {
+                            "$ref": "#/definitions/User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "$ref": "#definitions/InvalidParamResponse"
                         }
                     },
                     "404": {
@@ -179,6 +218,15 @@
                 "message": {
                     "type": "string",
                     "example": "User not found"
+                }
+            }
+        },
+        "InvalidParamResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Invalid param"
                 }
             }
         }
