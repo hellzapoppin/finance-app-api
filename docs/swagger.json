@@ -189,30 +189,51 @@
                     }
                 }
             }
+        },
+        "/api/transactions": {
+            "post": {
+                "summary": "Create a new transaction",
+                "tags": ["Transaction"],
+                "parameters": [
+                    {
+                        "name": "body",
+                        "required": true,
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#definitions/CreateTransactionParams"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Transaction created successfully",
+                        "schema": {
+                            "$ref": "#/definitions/Transaction"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid parameters",
+                        "schema": {
+                            "$ref": "#definitions/InvalidParamResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "User not found",
+                        "schema": {
+                            "$ref": "#/definitions/UserNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#definitions/InternalServerErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "CreateUserParams": {
-            "type": "object",
-            "properties": {
-                "first_name": {
-                    "type": "string",
-                    "example": "John"
-                },
-                "last_name": {
-                    "type": "string",
-                    "example": "Doe"
-                },
-                "email": {
-                    "type": "string",
-                    "example": "john@doe.com"
-                },
-                "password": {
-                    "type": "string",
-                    "example": "password"
-                }
-            }
-        },
         "User": {
             "type": "object",
             "properties": {
@@ -259,12 +280,24 @@
                 }
             }
         },
-        "InternalServerErrorResponse": {
+        "CreateUserParams": {
             "type": "object",
             "properties": {
-                "message": {
+                "first_name": {
                     "type": "string",
-                    "example": "Internal server error"
+                    "example": "John"
+                },
+                "last_name": {
+                    "type": "string",
+                    "example": "Doe"
+                },
+                "email": {
+                    "type": "string",
+                    "example": "john@doe.com"
+                },
+                "password": {
+                    "type": "string",
+                    "example": "password"
                 }
             }
         },
@@ -277,12 +310,77 @@
                 }
             }
         },
+        "Transaction": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "example": "1fe199dd-f194-472a-a3d1-49bf3ab602c6"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "Salary"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "1fe199dd-f194-472a-a3d1-49bf3ab602c6"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "EARNING",
+                    "description": "EANING | EXPENSE | INVESTMENT"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2023-10-01T00:00:00Z"
+                },
+                "amount": {
+                    "type": "number",
+                    "example": 1000
+                }
+            }
+        },
+        "CreateTransactionParams": {
+            "type": "object",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "example": "Salary"
+                },
+                "user_id": {
+                    "type": "string",
+                    "example": "1fe199dd-f194-472a-a3d1-49bf3ab602c6"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "EARNING",
+                    "description": "EANING | EXPENSE | INVESTMENT"
+                },
+                "date": {
+                    "type": "string",
+                    "example": "2023-10-01T00:00:00Z"
+                },
+                "amount": {
+                    "type": "number",
+                    "example": 1000
+                }
+            }
+        },
         "InvalidParamResponse": {
             "type": "object",
             "properties": {
                 "message": {
                     "type": "string",
                     "example": "Invalid param"
+                }
+            }
+        },
+        "InternalServerErrorResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Internal server error"
                 }
             }
         }
