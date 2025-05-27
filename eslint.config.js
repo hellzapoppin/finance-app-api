@@ -4,7 +4,13 @@ import pluginJs from '@eslint/js'
 /** @type {import('eslint').Linter.Config[]} */
 export default [
     {
-        languageOptions: { globals: { ...globals.node, ...globals.jest } },
+        files: ['**/*.js'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+                ...globals.jest,
+            },
+        },
     },
     {
         ignores: ['src/generated'],
