@@ -5,11 +5,13 @@ export class CreateUserUseCase {
         postgresCreateUserRepository,
         passwordHasherAdapter,
         idGeneratorAdapter,
+        tokensGeneratorAdapter,
     ) {
         this.postgresGetUserByEmailRepository = postgresGetUserByEmailRepository
         this.postgresCreateUserRepository = postgresCreateUserRepository
         this.passwordHasherAdapter = passwordHasherAdapter
         this.idGeneratorAdapter = idGeneratorAdapter
+        this.tokensGeneratorAdapter = tokensGeneratorAdapter
     }
     async execute(createUserParams) {
         // TODO: verificar se o email já está em uso
@@ -39,6 +41,9 @@ export class CreateUserUseCase {
         const createdUser =
             await this.postgresCreateUserRepository.execute(user)
 
-        return createdUser
+        return {
+            ...createdUser,
+            tokens: await this.tokensGeneratorAdapter.execute(userId),
+        }
     }
 }
