@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken'
 
 export class TokensGeneratorAdapter {
-    async execute(userId) {
+    execute(userId) {
         return {
             accessToken: jwt.sign(
                 { userId },
