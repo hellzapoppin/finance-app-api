@@ -19,6 +19,7 @@ import {
 } from '../../use-cases/index.js'
 
 import { IdGeneratorAdapter } from '../../adapters/index.js'
+import { PostgresGetTransactionByIdRepository } from '../../repositories/postgres/transaction/get-transaction-by-id.js'
 
 export const makeCreateTransactionController = () => {
     const createTransactionRepository =
@@ -60,8 +61,12 @@ export const makeUpdateTransactionController = () => {
     const updateTransactionRepository =
         new PostgresUpdateTransactionRepository()
 
+    const getTransactionByIdRepository =
+        new PostgresGetTransactionByIdRepository()
+
     const updateTransactionUseCase = new UpdateTransactionUseCase(
         updateTransactionRepository,
+        getTransactionByIdRepository,
     )
 
     const updateTransactionController = new UpdateTransactionController(
