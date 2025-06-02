@@ -83,27 +83,36 @@ describe('User Routes E2E Tests', () => {
                 id: undefined,
             })
 
-        await request(app).post('/api/transactions').send({
-            name: faker.book.title(),
-            user_id: createdUser.id,
-            date: faker.date.anytime(),
-            amount: 10000,
-            type: TransactionType.EARNING,
-        })
-        await request(app).post('/api/transactions').send({
-            name: faker.book.title(),
-            user_id: createdUser.id,
-            date: faker.date.anytime(),
-            amount: 2000,
-            type: TransactionType.EXPENSE,
-        })
-        await request(app).post('/api/transactions').send({
-            name: faker.book.title(),
-            user_id: createdUser.id,
-            date: faker.date.anytime(),
-            amount: 2000,
-            type: TransactionType.INVESTMENT,
-        })
+        await request(app)
+            .post('/api/transactions')
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
+            .send({
+                name: faker.book.title(),
+                user_id: createdUser.id,
+                date: faker.date.anytime(),
+                amount: 10000,
+                type: TransactionType.EARNING,
+            })
+        await request(app)
+            .post('/api/transactions')
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
+            .send({
+                name: faker.book.title(),
+                user_id: createdUser.id,
+                date: faker.date.anytime(),
+                amount: 2000,
+                type: TransactionType.EXPENSE,
+            })
+        await request(app)
+            .post('/api/transactions')
+            .set('Authorization', `Bearer ${createdUser.tokens.accessToken}`)
+            .send({
+                name: faker.book.title(),
+                user_id: createdUser.id,
+                date: faker.date.anytime(),
+                amount: 2000,
+                type: TransactionType.INVESTMENT,
+            })
 
         const response = await request(app)
             .get(`/api/users/balance`)
