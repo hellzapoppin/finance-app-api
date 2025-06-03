@@ -65,9 +65,12 @@ describe('Get Transaction By User Id', () => {
             'execute',
         )
 
-        await sut.execute(userId)
+        const from = '2025-01-01'
+        const to = '2025-01-02'
 
-        expect(executeSpy).toHaveBeenLastCalledWith(userId)
+        await sut.execute(userId, from, to)
+
+        expect(executeSpy).toHaveBeenLastCalledWith(userId, from, to)
     })
 
     it('should throws if GetUserByIdRepository throws', async () => {
