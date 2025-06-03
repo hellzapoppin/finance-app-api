@@ -258,6 +258,30 @@
             "get": {
                 "summary": "Get authenticated user transactions",
                 "tags": ["Transaction"],
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "required": true,
+                        "description": "Start date fro the transaction query (format: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "date": "2025-01-01"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "required": true,
+                        "description": "End date fro the transaction query (format: YYYY-MM-DD)",
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "date": "2025-01-31"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "Transaction found",
