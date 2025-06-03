@@ -36,3 +36,9 @@ export const createTransactionSchema = z.object({
 export const updateTransactionSchema = createTransactionSchema
     .partial()
     .strict({ message: 'Some provided field is not allowed' })
+
+export const getTransactionByUserIdSchema = z.object({
+    user_id: z.string().uuid(),
+    from: z.string().date(),
+    to: z.string().date(),
+})
