@@ -5,6 +5,8 @@ import { PostgresGetUserBalanceRepository } from './get-user-balance'
 import { TransactionType } from '@prisma/client'
 
 describe('Get User Balance Repository', () => {
+    const from = '2025-01-01'
+    const to = '2025-01-31'
     it('should get user balance on DB', async () => {
         const createdUser = await prisma.user.create({ data: user })
 
@@ -14,49 +16,49 @@ describe('Get User Balance Repository', () => {
                     name: faker.book.title(),
                     amount: 20000,
                     type: 'EXPENSE',
-                    date: faker.date.anytime(),
+                    date: new Date(from),
                     user_id: createdUser.id,
                 },
                 {
                     name: faker.book.title(),
                     amount: 20000,
                     type: 'EXPENSE',
-                    date: faker.date.anytime(),
+                    date: new Date(to),
                     user_id: createdUser.id,
                 },
                 {
                     name: faker.book.title(),
                     amount: 40000,
                     type: 'EARNING',
-                    date: faker.date.anytime(),
+                    date: new Date(from),
                     user_id: createdUser.id,
                 },
                 {
                     name: faker.book.title(),
                     amount: 40000,
                     type: 'EARNING',
-                    date: faker.date.anytime(),
+                    date: new Date(to),
                     user_id: createdUser.id,
                 },
                 {
                     name: faker.book.title(),
                     amount: 10000,
                     type: 'INVESTMENT',
-                    date: faker.date.anytime(),
+                    date: new Date(from),
                     user_id: createdUser.id,
                 },
                 {
                     name: faker.book.title(),
                     amount: 10000,
                     type: 'INVESTMENT',
-                    date: faker.date.anytime(),
+                    date: new Date(to),
                     user_id: createdUser.id,
                 },
             ],
         })
 
         const sut = new PostgresGetUserBalanceRepository()
-        const result = await sut.execute(createdUser.id)
+        const result = await sut.execute(createdUser.id, from, to)
 
         expect(result.balance.toString()).toBe('20000')
         expect(result.earnings.toString()).toBe('80000')
@@ -68,13 +70,17 @@ describe('Get User Balance Repository', () => {
         const sut = new PostgresGetUserBalanceRepository()
         const prismaSpy = jest.spyOn(prisma.transaction, 'aggregate')
 
-        await sut.execute(user.id)
+        await sut.execute(user.id, from, to)
 
         expect(prismaSpy).toHaveBeenCalledTimes(3)
         expect(prismaSpy).toHaveBeenCalledWith({
             where: {
                 user_id: user.id,
                 type: TransactionType.EARNING,
+                date: {
+                    gte: new Date(from),
+                    lte: new Date(to),
+                },
             },
             _sum: {
                 amount: true,
@@ -84,6 +90,10 @@ describe('Get User Balance Repository', () => {
             where: {
                 user_id: user.id,
                 type: TransactionType.EXPENSE,
+                date: {
+                    gte: new Date(from),
+                    lte: new Date(to),
+                },
             },
             _sum: {
                 amount: true,
@@ -93,6 +103,10 @@ describe('Get User Balance Repository', () => {
             where: {
                 user_id: user.id,
                 type: TransactionType.INVESTMENT,
+                date: {
+                    gte: new Date(from),
+                    lte: new Date(to),
+                },
             },
             _sum: {
                 amount: true,
@@ -106,7 +120,7 @@ describe('Get User Balance Repository', () => {
             new Error(),
         )
 
-        const promise = sut.execute(user.id)
+        const promise = sut.execute(user.id, from, to)
 
         expect(promise).rejects.toThrow()
     })
