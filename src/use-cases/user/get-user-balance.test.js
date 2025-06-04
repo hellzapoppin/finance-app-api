@@ -5,6 +5,8 @@ import { userBalance, user } from '../../tests/index.js'
 
 describe('Get User Balance Use Case', () => {
     const userId = faker.string.uuid()
+    const from = '2025-01-01'
+    const to = '2025-01-31'
 
     class GetUserByIdRepositoryStub {
         async execute() {
@@ -32,7 +34,7 @@ describe('Get User Balance Use Case', () => {
     it('should get user balance successfully', async () => {
         const { sut } = makeSut()
 
-        const balance = await sut.execute(userId)
+        const balance = await sut.execute(userId, from, to)
 
         expect(balance).toEqual(userBalance)
     })
@@ -41,7 +43,7 @@ describe('Get User Balance Use Case', () => {
         const { sut, getUserByIdRepository } = makeSut()
         jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValueOnce(null)
 
-        const promise = sut.execute(userId)
+        const promise = sut.execute(userId, from, to)
 
         expect(promise).rejects.toThrow(new UserNotFoundError(userId))
     })
@@ -50,7 +52,7 @@ describe('Get User Balance Use Case', () => {
         const { sut, getUserByIdRepository } = makeSut()
         const executeSpy = jest.spyOn(getUserByIdRepository, 'execute')
 
-        await sut.execute(userId)
+        await sut.execute(userId, from, to)
 
         expect(executeSpy).toHaveBeenCalledWith(userId)
     })
@@ -59,9 +61,9 @@ describe('Get User Balance Use Case', () => {
         const { sut, getUserBalanceRepository } = makeSut()
         const executeSpy = jest.spyOn(getUserBalanceRepository, 'execute')
 
-        await sut.execute(userId)
+        await sut.execute(userId, from, to)
 
-        expect(executeSpy).toHaveBeenCalledWith(userId)
+        expect(executeSpy).toHaveBeenCalledWith(userId, from, to)
     })
 
     it('should throw if GetUserByIdRepository throws', async () => {
@@ -70,7 +72,7 @@ describe('Get User Balance Use Case', () => {
             new Error(),
         )
 
-        const promise = sut.execute(userId)
+        const promise = sut.execute(userId, from, to)
 
         expect(promise).rejects.toThrow()
     })
@@ -81,7 +83,7 @@ describe('Get User Balance Use Case', () => {
             new Error(),
         )
 
-        const promise = sut.execute(userId)
+        const promise = sut.execute(userId, from, to)
 
         expect(promise).rejects.toThrow()
     })
