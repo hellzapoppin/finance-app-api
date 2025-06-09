@@ -3,7 +3,7 @@ const { usersRouter, transactionsRouter } = require('./routes/index.js')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
 const path = require('path')
-import cors from 'cors'
+const cors = require('cors')
 
 const app = express()
 
