@@ -3,6 +3,7 @@ import {
     PasswordComparatorAdapter,
     PasswordHasherAdapter,
     TokensGeneratorAdapter,
+    TokenVerifierAdapter,
 } from '../../adapters/index.js'
 import {
     GetUserByIdController,
@@ -121,7 +122,7 @@ export const makeLoginUserController = () => {
 
 export const makeRefreshTokenController = () => {
     const tokensGeneratorAdapter = new TokensGeneratorAdapter()
-    const tokenVerifierAdapter = new TokensGeneratorAdapter()
+    const tokenVerifierAdapter = new TokenVerifierAdapter()
     const refreshTokenUseCase = new RefreshTokenUseCase(
         tokensGeneratorAdapter,
         tokenVerifierAdapter,
